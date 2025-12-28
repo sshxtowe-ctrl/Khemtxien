@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>จดหมายจากเซียน</title>
+<style>
+* {
+  box-sizing: border-box;
+  font-family: monospace;
+}
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.box {
+  border: 1px solid #fff;
+  padding: 24px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+}
+button {
+  margin-top: 16px;
+  padding: 10px 16px;
+  background: #000;
+  color: #fff;
+  border: 1px solid #fff;
+  cursor: pointer;
+  display: none;
+}
+button:hover {
+  background: #222;
+}
+.choice {
+  display: none;
+  margin-top: 10px;
+}
+.msg {
+  margin-top: 12px;
+  color: #aaa;
+}
+img {
+  max-width: 100%;
+  margin-top: 16px;
+}
+</style>
+</head>
+<body>
+
+<audio id="bgm" loop>
+  <source src="music.mp4" type="audio/mpeg">
+</audio>
+
+<div class="box" id="app"></div>
+
+<script>
+const app = document.getElementById("app");
+const bgm = document.getElementById("bgm");
+let locked = false;
+
+function typeText(text, callback) {
+  let i = 0;
+  app.innerHTML = `<p id="text"></p>`;
+  const el = document.getElementById("text");
+
+  const interval = setInterval(() => {
+    el.innerHTML += text[i] === "\n" ? "<br>" : text[i];
+    i++;
+    if (i >= text.length) {
+      clearInterval(interval);
+      if (callback) callback();
+    }
+  }, 45);
+}
+
+/* หน้าเลือกอ่าน */
+typeText("จดหมายจากเซียน", () => {
+  app.innerHTML += `
+    <br>
+    <button style="display:block" onclick="readLetter()">อ่าน</button>
+    <button style="display:block" onclick="dontRead()">ไม่อ่าน</button>
+  `;
+});
+
+function dontRead() {
+  locked = true;
+  app.innerHTML = "<p>คุณเลือกไม่อ่านแล้ว</p>";
+}
+
+function readLetter() {
+  if (locked) return;
+  bgm.volume = 0.5;
+  bgm.play();
+  page1();
+}
+
+function page1() {
+  typeText("TO KHEMT", () => {
+    app.innerHTML += `<button style="display:block" onclick="page2()">ถัดไป</button>`;
+  });
+}
+
+function page2() {
+  typeText(
+`แม่เซียนบอกว่าตอนเรียนอย่าไปรักใคร
+เพราะการอกหักจากความรักมันไม่นับวัย
+วันนั้นเซียนเลือกจะเชื่อแม่ดีกว่า`,
+  () => {
+    app.innerHTML += `<button style="display:block" onclick="page3()">ไม่เชื่อเขมเหรอ ?</button>`;
+  });
+}
+
+function page3() {
+  typeText(
+`อือ ก็อาจจะมั้งนะ
+เซียนแค่อยากรู้อะไรบางอย่าง`,
+  () => {
+    app.innerHTML += `<button style="display:block" onclick="page4()">ถัดไป</button>`;
+  });
+}
+
+function page4() {
+  typeText("เวลานี่หายไป เขมคิดว่าไง", () => {
+    app.innerHTML += `
+      <button class="choice" style="display:block" onclick="showMsg('ก็สมเป็นแก')">1. เศร้ามากเลย</button>
+      <button class="choice" style="display:block" onclick="showMsg('บ้ารึเปล่าฟะ')">2. เขินแน่ ๆ</button>
+      <button style="display:block" onclick="page5()">ถัดไป</button>
+      <div class="msg" id="m"></div>
+    `;
+  });
+}
+
+function page5() {
+  typeText(
+`จะเป็นยังไงก็ช่าง
+แล้วถ้าหายไปจริง ๆ ?`,
+  () => {
+    app.innerHTML += `
+      <button class="choice" style="display:block"
+        onclick="showMsg('ไม่คิดถึงกันบ้างรึไง')">
+        1. คงได้แต่เศร้าอยู่คนเดียวครับ . . ㅠㅠ
+      </button>
+      <button class="choice" style="display:block"
+        onclick="showMsg('จะคิดถึงกันไหม')">
+        2. จะทิ้งกันเหรอครับ
+      </button>
+      <button style="display:block" onclick="page6()">ถัดไป</button>
+      <div class="msg" id="m"></div>
+    `;
+  });
+}
+
+function page6() {
+  typeText(
+"แต่รู้ไหม ถ้าเขมหายไป\nเซียนก็คงอยู่ไม่ได้",
+  () => {
+    app.innerHTML += `<button style="display:block" onclick="page7()">ถัดไป</button>`;
+  });
+}
+
+function page7() {
+  typeText(
+"บางที นี่อาจจะชอบแกจริง ๆ\nก็ได้มั้ง",
+  () => {
+    app.innerHTML += `<button style="display:block" onclick="page8()">ถัดไป</button>`;
+  });
+}
+
+function page8() {
+  typeText("เชื่อเซียนไหม", () => {
+    app.innerHTML += `
+      <button class="choice" style="display:block" onclick="page9()">1. เชื่อครับ</button>
+      <button class="choice" style="display:block" onclick="showMsg('ไม่ใช่สักหน่อย')">
+        2. เซียนหลอกเขมเหรอ
+      </button>
+      <div class="msg" id="m"></div>
+    `;
+  });
+}
+
+function page9() {
+  typeText("เป็นแฟนกัน ถ้าเป็นให้จุ้บ", () => {
+    app.innerHTML += `
+      <button class="choice" style="display:block" onclick="chub()">1. จุ้บ</button>
+      <button class="choice" style="display:block" onclick="cry()">2. ไม่จุ้บ</button>
+    `;
+  });
+}
+
+function chub() {
+  bgm.pause();
+  app.innerHTML = `
+    <img src="xien1.jpg">
+    <p>อือ เขมแฟนเซียน</p>
+  `;
+}
+
+function cry() {
+  bgm.pause();
+  app.innerHTML = `
+    <img src="xien2.jpg">
+    <p>อือ เสียใจ ไม่รักแล้ว</p>
+  `;
+}
+
+function showMsg(t) {
+  document.getElementById("m").innerText = t;
+}
+</script>
+
+</body>
+</html>
